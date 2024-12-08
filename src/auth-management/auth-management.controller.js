@@ -11,7 +11,7 @@ export const signup = async (req, res) => {
     if (!name || !email || !password || !dob)
       res.status(400).json({ message: "Some fields are missing" });
     const [existingUser] = await db.execute(
-      "Select * from users where email=?",
+      "Select * from USERS where email=?",
       [email]
     );
     if (existingUser.length)
