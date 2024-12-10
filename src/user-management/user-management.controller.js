@@ -8,9 +8,9 @@ export const fetchUserDetails = async (req, res) => {
       ]);
       let user = row[0];
       delete user["password"];
-      res.json({ data: user });
+      return res.json({ data: user });
     }
   } catch (err) {
-    res.status(400).json({ message: "Something went wtong" });
+    return res.status(400).json({ message: "Something went wtong" });
   }
 };

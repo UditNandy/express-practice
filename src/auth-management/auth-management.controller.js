@@ -1,4 +1,3 @@
-import { json } from "express";
 import db from "../../config/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -9,21 +8,21 @@ export const signup = async (req, res) => {
   if (!role) role = "user";
   try {
     if (!name || !email || !password || !dob)
-      res.status(400).json({ message: "Some fields are missing" });
+      return res.status(400).json({ message: "Some fields are missing" });
     const [existingUser] = await db.execute(
       "Select * from USERS where email=?",
       [email]
     );
     if (existingUser.length)
-      res.status(400).json({ message: "Email id already exists" });
+      return res.status(400).json({ message: "Email id already exists" });
     const hashedPassword = await bcrypt.hash(password, 10);
     const insert = await db.execute(
       "INSERT INTO USERS (name,email,password,dob) VALUES (?,?,?,?)",
       [name, email, hashedPassword, dob]
     );
-    res.json({ message: "User created successfully" });
+    return res.json({ message: "User created successfully" });
   } catch (err) {
-    res
+    return res
       .status(400)
       .json({ message: err?.sqlMessage || "Something went wrong" });
   }
@@ -49,7 +48,7 @@ export const signin = async (req, res) => {
         { expiresIn: process.env.JWT_EXPIRY }
       );
       return res.json({ message: "Signed in successfully", token });
-    } else res.status(400).json({ message: "Invalid Password" });
+    } else return res.status(400).json({ message: "Invalid Password" });
   } catch (err) {
     return res.status(400).json({ message: "Something went wrong" });
   }
